@@ -11,6 +11,8 @@ import time
 from worker import SendWorker
 from common import check_send_config, ConfigDialog, data_path, assets_path, root_path
 
+import subprocess, sys
+
 
 class DownloadedPage(QWidget):
     send_trigger = pyqtSignal(dict)
@@ -192,7 +194,11 @@ class DownloadedPage(QWidget):
 
     def open_dir(self, file_path):
         dir_name = os.path.dirname(file_path)
-        os.startfile(dir_name)
+        if sys.platform == "win32":
+            os.startfile(dir_name)
+            return
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, dir_name])
 
     def regain(self, downloaded_dict):
         pass
